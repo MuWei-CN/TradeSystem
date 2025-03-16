@@ -1,4 +1,4 @@
-package com.bistu.exr.model;
+package com.bistu.exr.dao.model;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
