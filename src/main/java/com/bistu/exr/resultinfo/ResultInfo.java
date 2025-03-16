@@ -7,6 +7,7 @@ import lombok.Data;
  * 返回信息
  */
 
+// 标准化返回信息，包括返回码、返回信息、返回数据
 @Data
 @Builder
 public class ResultInfo<T> {

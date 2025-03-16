@@ -4,6 +4,7 @@ package com.bistu.exr.resultinfo;
  * 返回码
  */
 
+// 返回码枚举类，包括成功、失败、未授权、未找到、服务器内部错误...
 public enum ReturnCode {
     SUCCESS(200, "success"),
     FAIL(400, "fail"),

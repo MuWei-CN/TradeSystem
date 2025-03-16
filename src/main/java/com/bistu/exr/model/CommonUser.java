@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+// @Data注解，自动生成getter、setter、toString等方法
+// @TableName注解，表示这个类对应数据库中的commonuser表
 @Data
 @TableName("`commonuser`")
 public class CommonUser {
