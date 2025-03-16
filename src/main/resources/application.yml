@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: BistuTrade
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/wm
+    username: root
+    password: TSYMQ1744
+
+logging:
+  config: classpath:static/logger/log4j2-spring.xml
