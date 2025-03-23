@@ -6,7 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
-@MapperScan("com.bistu.exr.dao")
+@MapperScan("com.bistu.exr.dao.mapper")
 @SpringBootApplication
 public class BistuTradeApplication {
 

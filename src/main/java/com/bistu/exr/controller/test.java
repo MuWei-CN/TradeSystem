@@ -1,21 +1,26 @@
 package com.bistu.exr.controller;
 
-import com.bistu.exr.dao.mapper.CommonUserMapper;
 import com.bistu.exr.dao.model.CommonUser;
 import com.bistu.exr.resultinfo.ResultInfo;
 import com.bistu.exr.resultinfo.ReturnCode;
-import com.bistu.exr.service.SImpl.CommonUserServiceImpl;
+import com.bistu.exr.service.impl.CommonUserServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * 示例文件
  */
 
 // Controller注解，标识这是一个Controller类, 用于处理http请求
+@Slf4j
 @RestController
 public class test {
     // Autowired注解，自动装配，将CommonUserServiceImpl类的实例注入到这里
@@ -35,5 +40,38 @@ public class test {
         } else {
             return ResultInfo.fail(ReturnCode.FAIL.getCode(), ReturnCode.FAIL.getMessage());
         }
+    }
+
+    // fileUp方法用于上传文件
+    @RequestMapping("/fileUp")
+    public ResultInfo<String> fileUp(@RequestParam MultipartFile file){
+        String filepath ="D://作业//"+file.getOriginalFilename();
+        byte[] bytes = null;
+        try{
+            bytes = file.getBytes();
+        }catch (IOException e){
+            log.error("fileUp error: " + e.getMessage());
+        }
+        if(bytes != null){
+            File mfile  = new File(filepath);
+            if(mfile.exists()){
+                mfile.delete();
+            }
+
+            FileOutputStream fos = null;
+            try {
+                fos = new FileOutputStream(mfile);
+                fos.write(bytes,0,bytes.length);
+                fos.flush();
+                fos.close();
+            }catch (Exception e){
+                log.error("fileUp error: " + e.getMessage());
+            }finally {
+                try{
+                    fos.close();
+                }catch (Exception e){}
+            }
+        }
+        return ResultInfo.success("success");
     }
 }
