@@ -3,9 +3,13 @@ spring:
     name: BistuTrade
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: 
+    url: jdbc:mysql://localhost:3306/secondhand_market?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
     username: zez
-    password: 
+    password: 123456
 
 logging:
   config: classpath:static/logger/log4j2-spring.xml
+
+springweb:
+  JWT:
+    serect:itheima
