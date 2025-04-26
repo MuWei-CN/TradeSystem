@@ -28,6 +28,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    // 用户注册接口
     @PostMapping("/register")
     public ResultInfo<String> register(@RequestParam(required = true)String username,
                                        @RequestParam(required = true)String password,
@@ -35,7 +36,7 @@ public class UserController {
                                        @RequestParam(required = true)String mobile,
                                        @RequestParam(required = false)String email,
                                        @RequestParam(required = false)GenderEnum gender,
-                                       @RequestParam(required = false,name = "real_name")String realName) throws Exception {
+                                       @RequestParam(required = false,name = "real_name")String realName) {
         String encodedPassword = EncodeUtil.string2MD5(password);
 
         User regUser = User.builder()
@@ -67,9 +68,16 @@ public class UserController {
         }
 
         Map<String,Object> data = new HashMap<String,Object>();
-        data.put("userId", userId);
+        data.put("userid", userId);
         data.put("password", password);
         String token = JwtUtil.genToken(data);
         return ResultInfo.success(token);
+    }
+
+    // 用户登录接口
+    @PostMapping("/login")
+    public ResultInfo<String> login(@RequestParam(required = true)String username,
+                                     @RequestParam(required = true)String password) {
+        return null;
     }
 }
