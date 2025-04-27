@@ -9,6 +9,7 @@ public enum ReturnCode {
     SUCCESS(200, "请求成功"),
     FAIL(400, "请求失败"),
     UNAUTHORIZED(401, "授权失败"),
+    PERMISSION_DENIED(402,"权限不足，拒绝访问"),
     NOT_FOUND(404, "not found"),
     INTERNAL_SERVER_ERROR(500, "服务器错误"),
     DATABASE_OPERATION_ERROR(533, "数据库操作错误"),

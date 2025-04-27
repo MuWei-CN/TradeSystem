@@ -10,14 +10,14 @@ import com.bistu.exr.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import static com.bistu.exr.dao.dataEnum.User.StatusEnum.ACTIVE;
+import static com.bistu.exr.dao.dataEnum.User.UserTypeEnum.ADMIN;
 import static com.bistu.exr.resultinfo.ReturnCode.*;
 
 @Slf4j
@@ -92,6 +92,28 @@ public class UserController {
             return ResultInfo.fail(USERNAME_NOT_EXISTS.getCode(), USERNAME_NOT_EXISTS.getMessage());
         }catch (Exception e){
             log.error("login failed: " + e.getMessage());
+            return ResultInfo.fail(FAIL.getCode(), FAIL.getMessage());
+        }
+    }
+
+    // 获取所有的待审核用户信息
+    @GetMapping("/pendings")
+    public ResultInfo<List<User>> pengingUsers(@RequestHeader(name = "Authorization") String token){
+        Map<String,Object> claim = JwtUtil.parseToken(token);
+        User admin = null;
+        try {
+            Long id = ((Number)claim.get("userid")).longValue();
+            admin = userService.searchUserById(id);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return ResultInfo.fail(FAIL.getCode(), FAIL.getMessage());
+        }
+        if (admin == null || !MD5Util.passwordIsTrue(claim.get("password").toString(),admin.getPassword()) || admin.getUserType() != ADMIN || admin.getStatus() != ACTIVE)
+            return ResultInfo.fail(PERMISSION_DENIED.getCode(), PERMISSION_DENIED.getMessage());
+        try {
+            return ResultInfo.success(userService.getAllPendings());
+        }catch (Exception e){
+            log.error("operation failed: " + e.getMessage());
             return ResultInfo.fail(FAIL.getCode(), FAIL.getMessage());
         }
     }
