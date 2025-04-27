@@ -9,4 +9,5 @@ public interface UserService {
     Long loginService(User user) throws Exception;
     Long registerService(User user) throws Exception;
     List<User> getAllPendings() throws Exception;
+    Long updateUserPwd(Long id, String password) throws Exception;
 }

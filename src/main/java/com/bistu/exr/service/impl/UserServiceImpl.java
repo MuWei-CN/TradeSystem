@@ -45,4 +45,10 @@ public class UserServiceImpl implements UserService {
         parma.eq("status",PENDING);
         return userMapper.selectList(parma);
     }
+
+    @Override
+    public Long updateUserPwd(Long id,String password) throws Exception {
+        User user = User.builder().userId(id).password(MD5Util.string2MD5(password)).build();
+        return ((Number)userMapper.updateById(user)).longValue();
+    }
 }

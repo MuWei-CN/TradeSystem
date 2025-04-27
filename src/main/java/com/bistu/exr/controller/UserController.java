@@ -108,10 +108,43 @@ public class UserController {
             log.error(e.getMessage());
             return ResultInfo.fail(FAIL.getCode(), FAIL.getMessage());
         }
-        if (admin == null || !MD5Util.passwordIsTrue(claim.get("password").toString(),admin.getPassword()) || admin.getUserType() != ADMIN || admin.getStatus() != ACTIVE)
+        if (admin == null) return ResultInfo.fail(USERNAME_NOT_EXISTS.getCode(), USERNAME_NOT_EXISTS.getMessage());
+        if (!MD5Util.passwordIsTrue(claim.get("password").toString(), admin.getPassword()))
+            return ResultInfo.fail(INCORRECT_PASSWORD.getCode(), INCORRECT_PASSWORD.getMessage());
+        if (admin.getStatus() != ACTIVE || admin.getUserType() != ADMIN)
             return ResultInfo.fail(PERMISSION_DENIED.getCode(), PERMISSION_DENIED.getMessage());
         try {
             return ResultInfo.success(userService.getAllPendings());
+        }catch (Exception e){
+            log.error("operation failed: " + e.getMessage());
+            return ResultInfo.fail(FAIL.getCode(), FAIL.getMessage());
+        }
+    }
+
+    // 在线更新密码
+    @PostMapping("/update_pwd_online")
+    public ResultInfo<String> updatePwdOnline(@RequestHeader(name = "Authorization") String token,
+                                          @RequestParam(required = true)String newpassword) {
+        Map<String, Object> claim = JwtUtil.parseToken(token);
+        User user = null;
+        try {
+            Long id = ((Number) claim.get("userid")).longValue();
+            user = userService.searchUserById(id);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResultInfo.fail(FAIL.getCode(), FAIL.getMessage());
+        }
+        if (user == null) return ResultInfo.fail(USERNAME_NOT_EXISTS.getCode(), USERNAME_NOT_EXISTS.getMessage() + "(请重新登录)");
+        if (!MD5Util.passwordIsTrue(claim.get("password").toString(), user.getPassword()))
+            return ResultInfo.fail(INCORRECT_PASSWORD.getCode(), INCORRECT_PASSWORD.getMessage() + "(请重新登录)");
+        if (user.getStatus() != ACTIVE)
+            return ResultInfo.fail(PERMISSION_DENIED.getCode(), PERMISSION_DENIED.getMessage() + "(待通过审核)");
+        try {
+            userService.updateUserPwd(user.getUserId(), newpassword);
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("userid", user.getUserId());
+            map.put("password", newpassword);
+            return ResultInfo.success(JwtUtil.genToken(map));
         }catch (Exception e){
             log.error("operation failed: " + e.getMessage());
             return ResultInfo.fail(FAIL.getCode(), FAIL.getMessage());
