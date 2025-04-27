@@ -8,7 +8,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.util.Map;
 
-// 拦截器
+// 自定义拦截器
 @Component
 public class AccessInterceptor implements HandlerInterceptor {
     @Override

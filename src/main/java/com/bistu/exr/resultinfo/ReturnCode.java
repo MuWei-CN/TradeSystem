@@ -13,8 +13,10 @@ public enum ReturnCode {
     INTERNAL_SERVER_ERROR(500, "服务器错误"),
     DATABASE_OPERATION_ERROR(533, "数据库操作错误"),
     USERNAME_ALREADY_EXISTS(440, "用户名已存在"),
-    MOBILE_ALREADY_EXISTS(441, "手机号不可重复注册"),
-    EMAIL_ALREADY_EXISTS(442, "邮箱不可重复注册"),;
+    MOBILE_ALREADY_EXISTS(441, "手机号已存在"),
+    EMAIL_ALREADY_EXISTS(442, "邮箱已存在"),
+    USERNAME_NOT_EXISTS(460,"用户名不存在"),
+    INCORRECT_PASSWORD(461,"密码错误");
 
     private int code;
     private String message;

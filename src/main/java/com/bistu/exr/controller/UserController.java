@@ -5,12 +5,11 @@ import com.bistu.exr.dao.dataEnum.User.UserTypeEnum;
 import com.bistu.exr.dao.model.User;
 import com.bistu.exr.resultinfo.ResultInfo;
 import com.bistu.exr.service.iservice.UserService;
-import com.bistu.exr.util.EncodeUtil;
+import com.bistu.exr.util.MD5Util;
 import com.bistu.exr.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,7 +36,7 @@ public class UserController {
                                        @RequestParam(required = false)String email,
                                        @RequestParam(required = false)GenderEnum gender,
                                        @RequestParam(required = false,name = "real_name")String realName) {
-        String encodedPassword = EncodeUtil.string2MD5(password);
+        String encodedPassword = MD5Util.string2MD5(password);
 
         User regUser = User.builder()
                 .username(username)
@@ -78,6 +77,22 @@ public class UserController {
     @PostMapping("/login")
     public ResultInfo<String> login(@RequestParam(required = true)String username,
                                      @RequestParam(required = true)String password) {
-        return null;
+        User user = User.builder().username(username).password(password).build();
+        Long userId = -1L;
+        try {
+            userId = userService.loginService(user);
+            if(userId == -1L)
+                return  ResultInfo.fail(INCORRECT_PASSWORD.getCode(), INCORRECT_PASSWORD.getMessage());
+            Map<String,Object> map = new HashMap<String,Object>();
+            map.put("userid",userId);
+            map.put("password",password);
+            return ResultInfo.success(JwtUtil.genToken(map));
+        }catch (NullPointerException e){
+            log.error("login failed: Not find user by username");
+            return ResultInfo.fail(USERNAME_NOT_EXISTS.getCode(), USERNAME_NOT_EXISTS.getMessage());
+        }catch (Exception e){
+            log.error("login failed: " + e.getMessage());
+            return ResultInfo.fail(FAIL.getCode(), FAIL.getMessage());
+        }
     }
 }

@@ -52,6 +52,6 @@ public class User {
     @TableField("status")
     private StatusEnum status;
 
-    @TableField("create_at")
+    @TableField("created_at")
     private Date createAt;
 }
